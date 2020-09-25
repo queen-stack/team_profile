@@ -45,7 +45,7 @@ function getManagerInfo() {
         {
             type: 'input',
             name: 'name',
-            message: 'What is the Managers Name?'
+            message: 'What is the Managers Name?:'
         },
         {
             type: 'input',
