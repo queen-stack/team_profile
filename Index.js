@@ -1,80 +1,154 @@
 const fs = require('fs');
-const inquirer = ('inquirer');
-const generateTemplate = require("./Src/template");
+const inquirer = require('inquirer');
+const { Manager } = require('./lib/employees');
+const { Engineer } = require('./lib/employees');
+const { Intern } = require('./lib/employees');
+//const employees = require('./lib/employees');
 
-// WHEN I start the application
-        // THEN I am prompted to enter the team manager’s name, employee ID, email address, and office number
-        
-        // WHEN I enter the team manager’s name, employee ID, email address, and office number
-        // THEN I am presented with a menu with the option to add an engineer or an intern or to finish building my team
-  
-const info = [
-    {
-        type: 'input',
-        name: "name",
-        message: "What is the team manager's name?"
-    },
-    {
-        type: 'input',
-        name: "Employee ID",
-        message: "Please enter Team Manager's 6 digit Employee ID?(Required)",
-        let eeidLength = Number(prompt("Employee ID must be 6 numbers"));
-        eeidLength = Math.floor(eeidLength);  // ensure is a whole number
-        if (!isValidEeidLength(EeidLength)){
-        alert ("Employee ID must be 6 numbers")
-        EeidLength = 6;
-   }
-   return eeidLength;
-
-]
-
-
-class Employee {
-    constructor(role) {
-        this.name = name;
-        this.id = id;
-        this.email = email;
-    }
+// Object to hold the team definition
+var theTeam = {
+    manager: {},
+    engineers: [],
+    interns: []
 }
-getName()
-getId()
-getEmail()
-getRole() // Returns 'Employee'
 
-class Manager {
-    constructor(role) {
-        this.name = name;
-        this.id = id;
-        this.email = email;
-        this.office = office;
-getName()
-getId()
-getEmail()
-getOffice()
-getRole() // Returns 'Manager'
-
-class Engineer {
-    constructor(role) {
-        this.name = name;
-        this.id = id;
-        this.email = email;
-        this.github = github;
-getName()
-getId()
-getEmail()
-getGithub()
-getRole() // Returns 'Engineer'
-
-class Intern {
-    constructor(role) {
-        this.name = name;
-        this.id = id;
-        this.email = email;
-        this.school = this.school;
-getName()
-getId()
-getEmail()
-getSchool()
-getRole() // Returns 'Intern'      
-    }
+// Prompt the operator for the next operation. add validations so user cannot skip & add the if statements.
+function teamBuildingMenu() {
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'nextStep',
+            message: 'Select option:',
+            choices: ['Add Engineer', 'Add Intern', 'Generate HTML']
+        }
+    ])
+    .then(function(data) {
+        switch(data.nextStep) {
+            case "Add Engineer":
+                getEngineerInfo();
+                break;
+            case "Add Intern":
+                getInternInfo();
+                break;
+            case "Generate HTML":
+                generateHTML();
+                break;
+            default:
+                console.log("Someone forgot to add to the case statement!");
+        }
+    });
 }
+
+function getManagerInfo() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the Managers Name?'
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is the Managers ID:'
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is the Managers email address?:'
+        },
+        {
+            type: 'input',
+            name: 'officeNumber',
+            message: 'What is the Managers office number?:'
+        }
+    ])
+    .then(function(data) {
+        theTeam.manager = new Manager(
+            data.name,
+            data.id,
+            data.email,
+            data.officeNumber
+        );
+        teamBuildingMenu();
+    });
+}
+
+function getEngineerInfo() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'WHat is the the Engineers name?:'
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is the Engineers ID number:'
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is the Engineers email address:'
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'What is the Engineers GitHub profile:'
+        }
+    ])
+    .then(function(data) {
+        theTeam.engineers.push(new Engineer(
+            data.name,
+            data.id,
+            data.email,
+            data.github
+        ));
+        teamBuildingMenu();
+    });
+}
+
+function getInternInfo() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is the Interns name:'
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is the Interns ID:'
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is the Interns email address:'
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: 'What school does the Intern attend:'
+        }
+    ])
+    .then(function(data) {
+        theTeam.interns.push(new Intern(
+            data.name,
+            data.id,
+            data.email,
+            data.school
+        ));
+        teamBuildingMenu();
+    });
+}
+
+//       Needs to be re-written to dynamically generate the HTML page.
+function generateHTML() {
+    console.log(JSON.stringify(theTeam));
+}
+
+
+// function call to initialize program
+getManagerInfo();
