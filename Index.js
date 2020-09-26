@@ -1,20 +1,16 @@
-const fs = require('fs');
 const inquirer = require('inquirer');
-const { Manager } = require('./lib/employees');
-const { Engineer } = require('./lib/employees');
-const { Intern } = require('./lib/employees');
-//const employees = require('./lib/employees');
+const { Manager, Engineer, Intern } = require('./lib/employees');
+const generatePage = require('./src/template');
+const { writeFile, copyFile } = require('./utils/generate-site');
 
-// Object to hold the team definition
-var theTeam = {
-    manager: {},
-    engineers: [],
-    interns: []
-}
-
-// Prompt the operator for the next operation. add validations so user cannot skip & add the if statements.
-function teamBuildingMenu() {
-    inquirer.prompt([
+// Prompt the operator for the next operation. 
+const teamBuildingMenu = theTeam => {
+    console.log(`
+    ==============
+    Make a choice
+    ==============
+    `);
+    return inquirer.prompt([
         {
             type: 'list',
             name: 'nextStep',
@@ -25,13 +21,13 @@ function teamBuildingMenu() {
     .then(function(data) {
         switch(data.nextStep) {
             case "Add Engineer":
-                getEngineerInfo();
+                return getEngineerInfo(theTeam);
                 break;
             case "Add Intern":
-                getInternInfo();
+                return getInternInfo(theTeam);
                 break;
             case "Generate HTML":
-                generateHTML();
+                return theTeam;
                 break;
             default:
                 console.log("Someone forgot to add to the case statement!");
@@ -39,116 +35,138 @@ function teamBuildingMenu() {
     });
 }
 
-function getManagerInfo() {
-    inquirer
-    .prompt([
+const getManagerInfo =() => {
+    console.log(`
+    ==================
+    Enter Manager Info
+    ==================
+    `);
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'name',
-            message: 'What is the Managers Name?:'
+            message: 'Enter Managers Name:'
         },
         {
             type: 'input',
             name: 'id',
-            message: 'What is the Managers ID:'
+            message: 'Enter Managers ID:'
         },
         {
             type: 'input',
             name: 'email',
-            message: 'What is the Managers email address?:'
+            message: 'Enter Managers email address:'
         },
         {
             type: 'input',
             name: 'officeNumber',
-            message: 'What is the Managers office number?:'
+            message: 'Enter Managers office number:'
         }
     ])
-    .then(function(data) {
+    .then( data => {
+        var theTeam = {
+            manager: {},
+            engineers:[],
+            interns:[]
+        };
         theTeam.manager = new Manager(
             data.name,
             data.id,
             data.email,
             data.officeNumber
         );
-        teamBuildingMenu();
+        return teamBuildingMenu(theTeam);
     });
-}
+};
 
-function getEngineerInfo() {
-    inquirer
-    .prompt([
+const getEngineerInfo = theTeam => {
+    console.log(`
+    ===================
+    Enter Engineer Info
+    ===================
+    `);
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'name',
-            message: 'WHat is the the Engineers name?:'
+            message: 'Enter Engineers name:'
         },
         {
             type: 'input',
             name: 'id',
-            message: 'What is the Engineers ID number:'
+            message: 'Enter Engineers ID number:'
         },
         {
             type: 'input',
             name: 'email',
-            message: 'What is the Engineers email address:'
+            message: 'Enter Engineers email address:'
         },
         {
             type: 'input',
             name: 'github',
-            message: 'What is the Engineers GitHub profile:'
+            message: 'Enter Engineers GitHub profile:'
         }
     ])
-    .then(function(data) {
+    .then( data => {
         theTeam.engineers.push(new Engineer(
             data.name,
             data.id,
             data.email,
             data.github
         ));
-        teamBuildingMenu();
+        return teamBuildingMenu(theTeam);
     });
-}
+};
 
-function getInternInfo() {
-    inquirer
-    .prompt([
+const getInternInfo = theTeam => {
+    console.log(`
+    =================
+    Enter Intern Info
+    =================
+    `);
+    return inquirer.prompt([
         {
             type: 'input',
             name: 'name',
-            message: 'What is the Interns name:'
+            message: 'Enter Interns name:'
         },
         {
             type: 'input',
             name: 'id',
-            message: 'What is the Interns ID:'
+            message: 'Enter Interns ID:'
         },
         {
             type: 'input',
             name: 'email',
-            message: 'What is the Interns email address:'
+            message: 'Enter Interns email address:'
         },
         {
             type: 'input',
             name: 'school',
-            message: 'What school does the Intern attend:'
+            message: 'Enter Interns School:'
         }
     ])
-    .then(function(data) {
+    .then( data => {
         theTeam.interns.push(new Intern(
             data.name,
             data.id,
             data.email,
             data.school
         ));
-        teamBuildingMenu();
+        return teamBuildingMenu(theTeam);
     });
-}
-
-//       Needs to be re-written to dynamically generate the HTML page.
-function generateHTML() {
-    console.log(JSON.stringify(theTeam));
-}
-
+};
 
 // function call to initialize program
-getManagerInfo();
+getManagerInfo()
+    .then(theTeam =>{
+        return generatePage(theTeam);
+    })
+    .then(pageHTML => {
+        return writeFile(pageHTML);
+    })
+    .then(writeFileResponse => {
+        console.log(writeFileResponse);
+    }).catch(err => {
+        console.log(err);
+    });
