@@ -1,22 +1,22 @@
 //import employees, { Manager } from './../lib/employees';
 const employees = require('./../lib/employees');
 
-let manager = new employees.Manager('Manager2', 345, 'manager@fb.com', 123);
+let manager = new employees.Manager('Name2', 345, 'a@a.com', 123);
 
 test('Manager name', () => {
-    expect(manager.getName()).toBe('Manager2');
+    expect(manager.getName()).toEqual(expect.any(String));
 });
 
 test('Manager id', () => {
-    expect(manager.getId()).toBe(345);
+    expect(manager.getId()).toEqual(expect.any(Number));
 });
 
 test('Manager email', () => {
-    expect(manager.getEmail()).toBe('manager@fb.com');
+    expect(manager.getEmail()).toBe('a@a.com');
 });
 
 test('Manager office number', () => {
-    expect(manager.getOfficeNumber()).toBe(123);
+    expect(manager.getOfficeNumber()).toEqual(expect.any(Number));
 });
 
 test('Manager role', () => {

@@ -45,9 +45,17 @@ const getManagerInfo =() => {
         {
             type: 'input',
             name: 'name',
-            message: 'Enter Managers Name:'
+            message: 'Enter Managers Name: (Required)',
+            validate: nameInput => {
+                if (nameInput) {
+                    return true;
+                } else {
+                    console.log('Enter Managers Name to Proceed')
+                }
+            }
+
         },
-        {
+    {
             type: 'input',
             name: 'id',
             message: 'Enter Managers ID:'
@@ -104,8 +112,16 @@ const getEngineerInfo = theTeam => {
         {
             type: 'input',
             name: 'github',
-            message: 'Enter Engineers GitHub profile:'
-        }
+            message: 'Enter Engineers GitHub profile: (Required)',
+            validate: githubInput => {
+                if (githubInput) {
+                    return true;
+                } else {
+                    console.log('Enter Engineer GitHub profile!');
+                    return false;
+                }
+                }
+            }
     ])
     .then( data => {
         theTeam.engineers.push(new Engineer(
