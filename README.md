@@ -13,6 +13,7 @@
         -[test](#test)
         -[username](#username)
         -[profile](#profile)
+        -[recording](#recording)
         
 
         ##username:
@@ -38,22 +39,26 @@
             THEN I exit the application, and the HTML is generated
        
        ##installation:
-            minimally requires access to steady wi-fi and chrome brwoser to render
+            minimally requires access to steady wi-fi and chrome browser to render appropriately
         
         ##usage:
-            research
+            research 
         
         ##license:
             MIT 
         
         ##contribution:
-            internet 
+            https://www.w3schools.com/, TA open office hours (guidance: Valerie Flores, Jake Dunham)
         
         ##test:
-            E2E regression
+            Validation for String, GitHub within Name field
+            Validation for Number within ID, Office field
           
        
         ##profile:
             https://www.linkedin.com/in/jeniferqueen/
+
+        ##recording:
+        iframe src="https://drive.google.com/file/d/1lM54UF4TjrUrp1i5kF9EbuX86g0Zkd52/preview" width="640" height="480"></iframe>    
         
        
